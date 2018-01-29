@@ -12,9 +12,11 @@ public class Application {
 
     public void loadClazzFromJavaArchive() {
         try {
-            URL[] urls = {new File(Configuration.instance.subFolderPathOfJavaArchive).toURI().toURL()};
+            Configuration conf = new Configuration();
+            URL[] urls = {new File(conf.subFolderPathOfJavaArchive).toURI().toURL()};
             URLClassLoader urlClassLoader = new URLClassLoader(urls, Application.class.getClassLoader());
-            clazz = Class.forName("Component", true, urlClassLoader);;
+            clazz = Class.forName("Component", true, urlClassLoader);
+            ;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -36,44 +38,46 @@ public class Application {
         }
     }
 
-    public void executeValueMethod(int[] arr) {
+    public int executeValueMethod(int[] arr) throws NoSuchMethodException {
         try {
             Method method = port.getClass().getMethod("getValue", int[].class);
             int result = (int) method.invoke(port, arr);
-            System.out.println("result   : " + result);
+            return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new NoSuchMethodException(e.getMessage());
         }
-
-        System.out.println();
     }
 
-    public void executeVersionMethod(String component){
+    public String executeVersionMethod(String component) {
         try {
             Method method = port.getClass().getMethod("getVersion");
             String result = (String) method.invoke(port);
-            System.out.println("show current component, " + result);
-        }
-        catch (Exception e){
+            return result;
+        } catch (Exception e) {
             e.getStackTrace();
+            return null;
         }
     }
 
 
-    public void execute(int[] arr) {
-        loadClazzFromJavaArchive();
-        provideInstanceOfClass();
-        provideComponentPort();
-        System.out.println();
-        executeValueMethod(arr);
+    public int execute(int[] arr) throws Exception {
+        try {
+            loadClazzFromJavaArchive();
+            provideInstanceOfClass();
+            provideComponentPort();
+            System.out.println();
+            return executeValueMethod(arr);
+        } catch (Exception e) {
+            throw new Exception(String.valueOf(e.getStackTrace()));
+        }
     }
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws Exception {
         Application application = new Application();
         application.reader();
     }
 
-    private void reader() throws IOException {
+    private void reader() throws Exception {
 
         Scanner scanner = new Scanner(System.in);
         String command = scanner.nextLine();
@@ -87,7 +91,9 @@ public class Application {
             reader();
         } else if (command.startsWith("set current component ")) {
             String[] parts = command.split(" ");
-            loadComponent(parts[3]);
+            String average = parts[3];
+            //TODO Check if average is median or mode
+            loadComponent(average);
             reader();
         } else if (command.startsWith("execute ")) {
             String parts[] = command.split(" ");
@@ -96,7 +102,7 @@ public class Application {
             for (int i = 0; i < arr.length; i++) {
                 numbers[i] = Integer.parseInt(arr[i]);
             }
-            execute(numbers);
+            System.out.println("result: " + execute(numbers));
             reader();
         } else {
             System.out.println("Unknown command.\nCommands: show components, show current components, set current component <component>, execute <searchVal> <array>");
@@ -104,11 +110,11 @@ public class Application {
         }
     }
 
-    private void loadComponent(String part) throws IOException {
+    public void loadComponent(String part) throws IOException {
 
         Properties prop = new Properties();
-
-        FileOutputStream fileOutputStream = new FileOutputStream(Configuration.instance.userDirectory + Configuration.instance.fileSeparator + "average.props");
+        Configuration conf = new Configuration();
+        FileOutputStream fileOutputStream = new FileOutputStream(conf.userDirectory + conf.fileSeparator + "average.props");
 
         prop.setProperty("component", part);
         prop.store(fileOutputStream, null);
@@ -118,17 +124,21 @@ public class Application {
     private void showCurrentComponent() {
 
         Properties properties = new Properties();
+        Configuration conf = new Configuration();
 
         try {
 
-            FileInputStream fileInputStream = new FileInputStream(Configuration.instance.userDirectory + Configuration.instance.fileSeparator + "average.props");
+
+            FileInputStream fileInputStream = new FileInputStream(conf.userDirectory + conf.fileSeparator + "average.props");
             properties.load(fileInputStream);
+            String component = properties.getProperty("component");
             fileInputStream.close();
 
             loadClazzFromJavaArchive();
             provideInstanceOfClass();
             provideComponentPort();
-            executeVersionMethod(properties.getProperty("component"));
+            String version = executeVersionMethod(properties.getProperty("component"));
+            System.out.println("Current component: " + component + " - " + version);
         } catch (Exception e) {
             e.getStackTrace();
         }
@@ -136,6 +146,9 @@ public class Application {
 
     private void showComponents() {
 
-        System.out.println("Components: " + Configuration.instance.nameOfJavaArchive + ", " + Configuration.instance.nameOfJavaArchive);
+        Configuration conf = new Configuration();
+        System.out.println("Components: " + conf.nameOfJavaArchive + ", " + conf.nameOfJavaArchive);
     }
+
+
 }

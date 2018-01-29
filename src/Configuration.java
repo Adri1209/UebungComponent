@@ -1,9 +1,9 @@
 import java.io.FileInputStream;
 import java.util.Properties;
 
-public enum Configuration {
+public class Configuration {
 
-    instance;
+
 
     public String fileSeparator = System.getProperty("file.separator");
     public String userDirectory = System.getProperty("user.dir");
@@ -20,12 +20,12 @@ public enum Configuration {
             FileInputStream fileInputStream = new FileInputStream(userDirectory + fileSeparator + "average.props");
             properties.load(fileInputStream);
             fileInputStream.close();
-            if (properties.getProperty("component").equals("mean"))
-                return Averages.mean;
+            if (properties.getProperty("component").equals("median"))
+                return Averages.median;
             else if (properties.getProperty("component").equals("mode"))
                 return Averages.mode;
             else
-                return  Averages.mean;
+                return  Averages.median;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

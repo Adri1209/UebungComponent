@@ -1,4 +1,4 @@
 public enum Averages {
 
-    mean, mode
+    median, mode
 }
