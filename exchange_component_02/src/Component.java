@@ -1,21 +1,21 @@
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class ComponentMode {
+public class Component {
 
-    private static ComponentMode instance = new ComponentMode();
+    private static Component instance = new Component();
     public Port port;
 
-    private ComponentMode(){
+    private Component(){
 
         port = new Port();
     }
 
-    public static ComponentMode getInstance() {
+    public static Component getInstance() {
         return instance;
     }
 
-    public class Port implements IComponentMode {
+    public class Port implements IComponent {
 
         private Method[] methods = getClass().getMethods();
 
@@ -25,14 +25,14 @@ public class ComponentMode {
         }
 
         @Override
-        public int getMode(int[] numbers) {
+        public int getValue(int[] numbers) {
             return innerMethodMode(numbers);
         }
     }
 
     private String innerMethodVersion() {
 
-        return "Mode - v1.0";
+        return "mode - v.1.0";
     }
 
 
