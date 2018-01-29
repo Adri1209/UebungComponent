@@ -1,5 +1,5 @@
-import java.util.HashMap;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 public class ComponentMode {
 
@@ -17,6 +17,8 @@ public class ComponentMode {
 
     public class Port implements IComponentMode {
 
+        private Method[] methods = getClass().getMethods();
+
         @Override
         public String getVersion() {
             return innerMethodVersion();
@@ -33,6 +35,8 @@ public class ComponentMode {
         return "Mode - v1.0";
     }
 
+
+    // Link to Source Code: https://stackoverflow.com/questions/15725370/write-a-mode-method-in-java-to-find-the-most-frequently-occurring-element-in-an
     private int innerMethodMode(int [] numbers) {
 
         HashMap<Integer,Integer> hm = new HashMap<>();
