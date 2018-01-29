@@ -14,18 +14,18 @@ public enum Configuration {
     public String fullPathToJavaArchive = userDirectory + subFolderPathOfJavaArchive;
     public String nameOfClass = "Component";
 
-    public String getAverageType() {
+    public Averages getAverageType() {
         try {
             Properties properties = new Properties();
             FileInputStream fileInputStream = new FileInputStream(userDirectory + fileSeparator + "average.props");
             properties.load(fileInputStream);
             fileInputStream.close();
             if (properties.getProperty("component").equals("mean"))
-                return "01";
+                return Averages.mean;
             else if (properties.getProperty("component").equals("mode"))
-                return "02";
+                return Averages.mode;
             else
-                return "01";
+                return  Averages.mean;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;

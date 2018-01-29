@@ -1,9 +1,7 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -38,7 +36,7 @@ public class Application {
         }
     }
 
-    public void executeMethod(int[] arr) {
+    public void executeValueMethod(int[] arr) {
         try {
             Method method = port.getClass().getMethod("getValue", int[].class);
             int result = (int) method.invoke(port, arr);
@@ -50,13 +48,24 @@ public class Application {
         System.out.println();
     }
 
+    public void executeVersionMethod(String component){
+        try {
+            Method method = port.getClass().getMethod("getVersion");
+            String result = (String) method.invoke(port);
+            System.out.println("show current component, " + result);
+        }
+        catch (Exception e){
+            e.getStackTrace();
+        }
+    }
+
 
     public void execute(int[] arr) {
         loadClazzFromJavaArchive();
         provideInstanceOfClass();
         provideComponentPort();
         System.out.println();
-        executeMethod(arr);
+        executeValueMethod(arr);
     }
 
     public static void main(String... args) throws IOException {
@@ -115,7 +124,11 @@ public class Application {
             FileInputStream fileInputStream = new FileInputStream(Configuration.instance.userDirectory + Configuration.instance.fileSeparator + "average.props");
             properties.load(fileInputStream);
             fileInputStream.close();
-            System.out.println(properties.getProperty("component"));
+
+            loadClazzFromJavaArchive();
+            provideInstanceOfClass();
+            provideComponentPort();
+            executeVersionMethod(properties.getProperty("component"));
         } catch (Exception e) {
             e.getStackTrace();
         }

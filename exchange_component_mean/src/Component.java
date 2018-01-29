@@ -28,7 +28,7 @@ public class Component {
     }
 
     public String innerMethodGetVersion(){
-        return "mean - v.1.0";
+        return "median - v.1.0";
     }
 
     public int innerMethodGetMean(int[] list){
