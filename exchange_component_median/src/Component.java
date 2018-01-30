@@ -22,16 +22,16 @@ public class Component {
             return innerMethodGetVersion();
         }
         public int getValue(int[] list){
-            return innerMethodGetMean(list);
+            return innerMethodGetMedian(list);
         }
 
     }
 
     public String innerMethodGetVersion(){
-        return "v.1.0";
+        return "median - v.1.0";
     }
 
-    public int innerMethodGetMean(int[] list){
+    public int innerMethodGetMedian(int[] list){
         int median;
         Arrays.sort(list);
         if (list.length % 2 == 0){

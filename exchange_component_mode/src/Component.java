@@ -32,7 +32,7 @@ public class Component {
 
     private String innerMethodVersion() {
 
-        return "v.1.0";
+        return "mode - v.1.0";
     }
 
 

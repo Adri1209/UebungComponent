@@ -18,6 +18,6 @@ public class AverageTest {
         Application app = new Application();
         app.loadComponent("mode");
         int [] numbers = new int[] {1,2,3,2,8,6,45};
-        Assert.assertEquals(3,app.execute(numbers));
+        Assert.assertEquals(2,app.execute(numbers));
     }
 }

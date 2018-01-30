@@ -48,7 +48,7 @@ public class Application {
         }
     }
 
-    public String executeVersionMethod(String component) {
+    public String executeVersionMethod() {
         try {
             Method method = port.getClass().getMethod("getVersion");
             String result = (String) method.invoke(port);
@@ -91,9 +91,12 @@ public class Application {
             reader();
         } else if (command.startsWith("set current component ")) {
             String[] parts = command.split(" ");
-            String average = parts[3];
-            //TODO Check if average is median or mode
-            loadComponent(average);
+            if (parts[3].equals("median") || parts[3].equals("mode")) {
+                loadComponent(parts[3]);
+            }
+            else {
+                System.out.println("Average is not available. Please choose median or mode!");
+            }
             reader();
         } else if (command.startsWith("execute ")) {
             String parts[] = command.split(" ");
@@ -131,14 +134,12 @@ public class Application {
 
             FileInputStream fileInputStream = new FileInputStream(conf.userDirectory + conf.fileSeparator + "average.props");
             properties.load(fileInputStream);
-            String component = properties.getProperty("component");
             fileInputStream.close();
 
             loadClazzFromJavaArchive();
             provideInstanceOfClass();
             provideComponentPort();
-            String version = executeVersionMethod(properties.getProperty("component"));
-            System.out.println("Current component: " + component + " - " + version);
+            System.out.println("Current component: " + executeVersionMethod());
         } catch (Exception e) {
             e.getStackTrace();
         }
